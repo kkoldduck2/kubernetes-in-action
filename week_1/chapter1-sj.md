@@ -1,4 +1,4 @@
-## 1. p. 49
+## 1. 가상머신의 실행 흐름 (p. 49)
 
 <img width="427" alt="image" src="https://github.com/user-attachments/assets/e734ff1a-0cf5-401b-8d38-d09ffb8698b4" />
 
