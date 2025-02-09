@@ -48,14 +48,14 @@ p. 115
 <img width="620" alt="image" src="https://github.com/user-attachments/assets/dc45d6f0-d2c1-46f3-bc89-161c33dcc69b" />
 
 - 컨테이너가 실행되면, 애플리케이션이 표준 출력(stdout) 또는 표준 에러(stderr)로 로그를 출력함.
-- **컨테이너 런타임**은 표준 출력과 표준 에러 스트림을 호스트 노드의 특정 경로에 있는 로그 파일로 redirects 함.
+- **컨테이너 런타임**은 표준 출력과 표준 에러 스트림을 호스트 노드의 특정 경로에 있는 로그 파일로 **redirects** 함.
     - 로그는 `/var/log/pods/{namespace}_{pod-name}_{pod-uid}/{container-name}/0.log` 같은 경로에 저장됨.
     - 컨테이너 파일 시스템이 재시작되거나 삭제되더라도, 로그는 노드에 남아있음
 - 이 로그 파일은 **kubelet**이 관리하며, 용량이 너무 커지면 (설정된 정책에 따라) **로그 로테이션을 수행**함.
 - 로그 로테이션
     - kubelet 설정 파일에 파라미터로 설정한다.
     - [kubelet 설정 파일](https://kubernetes.io/ko/docs/tasks/administer-cluster/kubelet-config-file/)을 사용하여 두 개의 kubelet 파라미터 [`containerLogMaxSize` 및 `containerLogMaxFiles`](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration)를 설정 가능하다.
-- 로그 로테이션이 설정되면, kubelet은 컨테이너 런타임과 **CRI(Container Runtime Interface)** 를 통해 통신하며 로그를 정리함
+- 로그 로테이션이 설정되면, **kubelet은 컨테이너 런타임과 CRI(Container Runtime Interface)** 를 통해 통신하며 로그를 정리함
     1. **kubelet이 로그를 모니터링** → 크기가 설정된 용량을 초과하면 로테이션 수행
     2. **kubelet이 CRI를 통해 컨테이너 런타임에 정보 전달** → "이제 새로운 로그 파일을 생성하라"
     3. **컨테이너 런타임이 새로운 로그 파일을 지정된 경로에 생성** → 기존 로그는 `.log.1`, `.log.2`로 백업됨
