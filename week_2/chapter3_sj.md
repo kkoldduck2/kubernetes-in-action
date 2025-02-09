@@ -53,17 +53,7 @@ p. 115
     - 컨테이너 파일 시스템이 재시작되거나 삭제되더라도, 로그는 노드에 남아있음
 - 이 로그 파일은 **kubelet**이 관리하며, 용량이 너무 커지면 (설정된 정책에 따라) **로그 로테이션을 수행**함.
 - 로그 로테이션
-    - kubelet이 로그를 자동으로 로테이트하도록 설정할 수 있다.
-        - 예) `log-size-max=10MB`로 설정되어 있다면, 한 로그 파일이 10MB를 넘으면 kubelet이 새 로그 파일을 만들어 기존 로그를 보관함.
-        - 일반적으로 오래된 로그 파일은 `.log.1`, `.log.2`와 같이 번호가 붙어 보관됨.
-        - 로그 로테이션 예시
-            
-            ```jsx
-            /var/log/pods/default_nginx-1234_abcd/nginx/0.log
-            /var/log/pods/default_nginx-1234_abcd/nginx/0.log.1
-            /var/log/pods/default_nginx-1234_abcd/nginx/0.log.2
-            ```
-            
+    - kubelet 설정 파일에 파라미터로 설정한다.
     - [kubelet 설정 파일](https://kubernetes.io/ko/docs/tasks/administer-cluster/kubelet-config-file/)을 사용하여 두 개의 kubelet 파라미터 [`containerLogMaxSize` 및 `containerLogMaxFiles`](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration)를 설정 가능하다.
 - 로그 로테이션이 설정되면, kubelet은 컨테이너 런타임과 **CRI(Container Runtime Interface)** 를 통해 통신하며 로그를 정리함
     1. **kubelet이 로그를 모니터링** → 크기가 설정된 용량을 초과하면 로테이션 수행
