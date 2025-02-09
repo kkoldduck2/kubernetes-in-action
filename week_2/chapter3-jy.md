@@ -11,7 +11,13 @@
 #### 파드가 필요한 이유
 * 컨테이너는 단일 프로세스를 실행하기 위한 목적으로 설계
 * 파드를 사용하면 연관된 프로세스를 함께 실행하고 단일 컨테이너 안에서 모두 함께 실행되는 것처럼 거의 동일한 환경을 제공하면서 격리된 상태로 유지
-* 파드의 모든 컨테이너는 동일한 네트워크 네임스페이스와 UTS 네임스페이스 안에서 실행되므로 **모든 컨테이너는 같은 호스트 이름과 네트워크 인터페이스를 공유함.**
+* 파드의 모든 컨테이너는 동일한 네트워크 네임스페이스와 UTS 네임스페이스 안에서 실행되므로 **모든 컨테이너는 같은 호스트 이름과 네트워크 인터페이스를 공유함.** 
+  * 파드 안의 컨테이너과 동일한 네트워크 네임스페이스에서 실행되기 때문에 동일한 IP 주소와 포트 공간 공유
+  * 클러스터의 모든 파드는 하나의 플랫한 공유 네트워크 주소 공간에 상주하므로 모든 파드는 다른 파드의 IP 주소를 사용해 접근하는 것이 가능.
+  * 파드는 논리적 호스트로서 컨테이너가 아닌 환경에서의 물리적 호스트 혹흔 VM과 매우 유사하게 동작
+
+![3.2](./jy.assets/3.2.png)
+
 * **애플리케이션들을 하나의 파드에 넣는 것**은 항상 같은 노드에서 실행되고 필요한 애플리케이션만 스케일링이 안되므로 **확장성 관점**에서 적합하지 않음 
 
 ![3.3](./jy.assets/3.3.png)
@@ -35,7 +41,7 @@ spec:
   - image: luksa/kubia          # 컨테이너 이미지
     name: kubia                 # 컨테이너 이름
     ports:
-    - containerPort: 8080       # 애플리케이션이 수신하는 포트트
+    - containerPort: 8080       # 애플리케이션이 수신하는 포트
       protocol: TCP
 ```
   
@@ -94,8 +100,29 @@ spec:
 
 #### 파드에 어노테이션 달기
 **용도** : 쿠버네티스에 새로운 기능을 추가할 때 흔히 사용.
-알파 혹은 베타 버전은 API 오브젝트에 새로운 필드를 바로 도입하지 않음.
-(필드 대신 어노테이션 사용)
+알파 혹은 베타 버전은 API 오브젝트에 새로운 필드를 바로 도입하지 않음. (필드 대신 어노테이션 사용)
+>❓**궁금한 것**
+_어노테이션을 어떤 경우 사용하는지?     
+단지 신규 API 출시 전 알파, 베타버전 개발중에 임시로 사용하기 위한 기능만인지??_
+
+💡참고 : https://kubernetes.io/ko/docs/concepts/overview/working-with-objects/annotations/
+
+**레이블** : 오브젝트를 선택하고, 특정 조건을 만족하는 오브젝트 컬렉션 검색
+**어노테이션** : 오브젝트를 식별하고 선택하는데 사용되지 않음.   
+추가적으로 기록할 수 있는 정보로 어노테이션의 메타데이터는 작거나 크고, 구조적이거나 구조적이지 않을 수 있으며, 레이블에서 허용되지 않는 문자를 포함할 수 있다.  
+
+**어노테이션을 사용하는 대신, 이 유형의 정보를 외부 데이터베이스 또는 디렉터리에 저장할 수 있지만, 이는 배포, 관리, 인트로스펙션(introspection) 등을 위한 공유 클라이언트 라이브러리와 도구 생성을 훨씬 더 어렵게 만들 수 있다.**
+ 
+어노테이션은 레이블과 같이 키/값 맵이다.
+```yaml
+"metadata": {
+  "annotations": {
+    "key1" : "value1",
+    "key2" : "value2"
+  }
+}
+```
+
 
 #### 네임스페이스를 사용한 리소스 그룹화
 **용도** : 쿠버네티스 네임스페이스로 오브젝트를 그룹화 (리눅스 네임스페이스는 프로세스 격리용도로 다름)
@@ -104,41 +131,17 @@ spec:
 * 단, 노드 리소스는 전역으로 단일 네임스페이스에 속하지 않음   
 
 #### 파드 삭제
-* 파드 이름 지정 삭제
-```bash
-$ kubectl delete po kubia-gpu
-pod "kubia-gpu" deleted
-```
-* 레이블 섹렉터 사용하여 삭제 : 이름을 지정해서 삭제가능하지만 레이블 셀렉터를 통해 제할 수 있음
-```bash
-$ kubectl delete po -l creation_method=manual
-pod "kubia-manual" deleted
-pod "kubia-manual-v2" deleted
-```
-* 네임스페이스 삭제로 파드 삭제
-```bash
-$ kubectl delete ns custom-namespace
-namespace "custom-namespace" deleted
-```
-* 네임스페이스를 유지하면서 네임스페이스 안에 있는 모든 파드 삭제
-```bash
-$ kubectl delete po --all
-pod "kubia-zxzij" deleted
-```
-* 네임스페이스에서 (거의) 모든 리소스 삭제
-```bash
-$ kubectl delete all --all
-pod "kubia-09as0" deleted
-replicationcontroller "kubia" deleted
-service "kubernetes" deleted
-service "kubia-http" deleted
-```
-
-kubectl delete all --all 키워드로 삭제해도 모든 리소스가 완전히 삭제되는 것은 아님. 
-시크릿 등 특정 리소스는 보존되어 명시적으로 삭제필요
-
-![3.10](./jy.assets/3.10.png)   
+|구분|설명|비고|
+|--|--|--|
+|파드 이름 지정 삭제|지정된 파드만 삭제한다.|$ kubectl delete po kubia-gpu</br>pod "kubia-gpu" deleted|
+|레이블 셀렉터 사용 삭제|선택한 레이블이 태그되어있는 파드 삭제|$ kubectl delete po -l creation_method=manual</br>pod "kubia-manual" deleted</br>pod "kubia-manual-v2" deleted</br>|
+|네임스페이스 삭제로 파드 삭제|네임스페이스안에 있는 리소스나 객체 모두 삭제|$ kubectl delete ns custom-namespace</br>namespace "custom-namespace" deleted|
+|네임스페이스 안에 있는 모든 파드 삭제|네임스페이스는 유지됨|$ kubectl delete po --all</br>pod "kubia-zxzij" deleted|
+|네임스페이스에서 (거의) 모든 리소스 삭제|kubectl delete all --all 키워드로 삭제해도 **모든 리소스가 완전히 삭제되는 것은 아님. 시크릿 등 특정 리소스는 보존되어 명시적으로 삭제필요**|$ kubectl delete all --all</br>pod "kubia-09as0" deleted</br>replicationcontroller "kubia" deleted</br>service "kubernetes" deleted</br>service "kubia-http" deleted|
    
-## 궁금한 것
-어노테이션을 어떤 경우 사용하는지? 
-단지 신규 API 출시 전 알파, 베타버전 개발중에 임시로 사용하기 위한 기능만인지??
+rel=canary 레이블 지정 후 canary 파드 삭제 시
+```
+$ kubectl delete po -l rel=canary
+```   
+
+![3.10](./jy.assets/3.10.png)
