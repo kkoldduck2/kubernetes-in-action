@@ -14,26 +14,21 @@
 
 
 
-### RC(ReplicationController) vs RS(ReplicaSet)
 
 
+---
 
-![img](chapert3,4-cjs.assets/img.jpg)
 
-rs 샘플 spec.selector.matchExpressions 
-
-1) In: key와 values를 지정하여 key, value가 일치하는 Pod 필터링
-2) NotIn: key는 일치하고 value는 일치하지 않는 Pod 필터링
-3) Exists: key에 맞는 label의 Pod 연결
-4) DoesNotExist: key와 다른 label의 Pod 연결
-
-![img](chapert3,4-cjs.assets/img.png)
 
 
 
 ### **레플리카셋과 파드의 연관 관계**
 
 파드는 레이블 기준으로 관리하기 때문에 레플리카셋과 파드는 느슨하게 결합되어 있다. 즉, 레플리카셋과 파드를 한꺼번에 삭제할 때는 **kubectl delete replicaset 컨테이너이름 --cascade=false** 명령으로 레플리카세트를 삭제한다.
+
+
+
+---
 
 
 
@@ -47,6 +42,11 @@ rs 샘플 spec.selector.matchExpressions
 
   * matchExpressions 레이블 셀렉터
 
+    * In: key와 values를 지정하여 key, value가 일치하는 Pod 필터링
+    * NotIn: key는 일치하고 value는 일치하지 않는 Pod 필터링
+    * Exists: key에 맞는 label의 Pod 연결
+    * DoesNotExist: key와 다른 label의 Pod 연결
+    
     ```yaml
     spec:
       selector:
@@ -56,8 +56,14 @@ rs 샘플 spec.selector.matchExpressions
           values:
           - <string>
     ```
+    
+    ![img](chapert3,4-cjs.assets/img.jpg)
+
+![img](chapert3,4-cjs.assets/img.png)
 
 
+
+---
 
 
 
@@ -85,6 +91,10 @@ Kubernetes Probe는 크게 Liveness Probe, Readiness Probe, Startup Probe 세 �
 | successThreshold                                             |    1    | Probe 시도가 실패 후부터 Probe가 성공했다고 판단하는 최소 연속 성공 횟수입니다. **기본 값 및 최소 값은 1**입니다. **Startup 및 Liveness Probe는 반드시 1 이어야 합니다.** |
 | terminationGracePeriodSeconds(Probe-level) [Kubernetes v1.25 Beta] |   30s   | Kubelet 이 Probe에 실패한 Container 의 종료를 트리거한 다음, Container Runtime 이 해당 Container 를 강제로 중지하는 사이에 대기하도록 설정한 유예 기간(초) 입니다.**기본 값은 30 초** 이며, 최소 값은 1초 입니다. |
 | timeutSeconds                                                |   1s    | Probe 시도 후 실패라고 간주하는 Timeout 시간입니다. 기본 값은 1초 입니다. |
+
+
+
+---
 
 
 
