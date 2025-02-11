@@ -92,7 +92,12 @@ Kubernetes Probe는 크게 Liveness Probe, Readiness Probe, Startup Probe 세 �
 | terminationGracePeriodSeconds(Probe-level) [Kubernetes v1.25 Beta] |   30s   | Kubelet 이 Probe에 실패한 Container 의 종료를 트리거한 다음, Container Runtime 이 해당 Container 를 강제로 중지하는 사이에 대기하도록 설정한 유예 기간(초) 입니다.**기본 값은 30 초** 이며, 최소 값은 1초 입니다. |
 | timeutSeconds                                                |   1s    | Probe 시도 후 실패라고 간주하는 Timeout 시간입니다. 기본 값은 1초 입니다. |
 
+terminationGracePeriodSeconds는 Kubernetes에서 pod를 안전하게 종료하기 위해 사용하는 설정 값으로, kubelet이 SIGTERM 시그널을 보낸 후부터 완전히 종료될 때까지 기다리는 시간(초)이다. 기본값은 30초이다.
+출처: https://wlsdn3004.tistory.com/14 [IT DevOps 기록:티스토리]
 
+만약 설정 값이 짧으면 컨테이너가 Graceful 한 종료를 마치기 전에 SIGKILL 시그널이 보내져서 데이터 일관성을 유지하지 못할 수 있고, 반대로 설정 값이 너무 길면 Pod의 종료가 지연되어 운영상의 이슈를 야기할 수 있다
+
+출처 : https://wlsdn3004.tistory.com/14
 
 ---
 
