@@ -73,20 +73,16 @@
 
 1. 서비스 endpoint를 수동으로 구성하여 외부 IP 주소로 요청이 가도록 한다.
     - 서비스 yaml 파일에 selector를 추가하면 endpoint 리소스가 자동으로 생성된다.
-    
-    ![image.png](attachment:a2f65146-e37a-4435-bbe2-5ba647470e0f:image.png)
-    
+    <img width="517" alt="image" src="https://github.com/user-attachments/assets/e95a8fe2-f2f1-47c5-9221-ee7b6ebb1635" />
+
     - selector 없이 서비스를 구성하면, endpoint 리소스를 수동으로 구성할 수 있다. (이때 endpoint 이름 = 서비스 이름)
-    
-    ![image.png](attachment:c7b8c980-c96d-48e9-94a4-6ff1fdf56bb1:image.png)
-    
-    ![image.png](attachment:80436e94-994c-4ed9-82d0-209dbdb9b01d:image.png)
+    <img width="517" alt="image" src="https://github.com/user-attachments/assets/f3335afb-04cf-45db-ade0-4b626cf09ddb" />
+
     
 2. 외부 서비스를 위한 별칭 생성
     - 서비스 생성 시 type을 ExternalName으로 한다.
-    
-    ![image.png](attachment:e7fc78bf-d181-4cdd-8f2e-5241ac5d7b0a:image.png)
-    
+    <img width="517" alt="image" src="https://github.com/user-attachments/assets/ce10d6c2-90f8-452a-a3f7-69b466011a09" />
+
     - 예 : 외부 데이터베이스(MySQL)를 Kubernetes 내부에서 사용할 때
     
     ```yaml
@@ -111,24 +107,22 @@
     - 노드에 대한 방화벽 설정 필요
     - 특정 노드가 장애나면, 해당 노드로 요청을 보내는 클라이언트는 더 이상 서비스에 액세스할 수 없음
     - 따라서 모든 노드에 요청을 분산시키도록 노드 앞에 로드밸런서를 배치하는 것이 좋다.
-    
-    ![image.png](attachment:93d4ea38-89f4-4c8b-a615-8a61609be1f7:image.png)
+  <img width="517" alt="image" src="https://github.com/user-attachments/assets/4147e279-1a17-4c33-927c-f6c9ef201dc7" />
+
     
 2. 로드밸런서 서비스
     - 노드 포트 서비스의 확장
     - 로드밸런서는 공개적으로 액세스 가능한 IP 주소를 가지며 모든 연결을 서비스로 전달함.
     - 노드에 대한 방화벽 설정 필요 없음
     - 덧) curl 명령과 달리, 브라우저에서 keep-alive로 요청을 보낼 경우, 처음 요청을 보낸 pod로 계속 요청이 가게 됨 (세션 어피니티 설정이 None이더라도. keep-alive는 TCP 연결을 유지하기 때문)
-    
-    ![image.png](attachment:9a2eeba2-a873-400b-afa3-741ddaf390b2:image.png)
-    
+    <img width="517" alt="image" src="https://github.com/user-attachments/assets/90818e4d-b39d-4865-9ccc-f561a38559b8" />
+
 
 1. 인그레스
     - 로드밸런서 서비스는 자신의 공용 IP 주소를 가진 로드밸런서가 필요한 반면, 인그레스는 한 IP 주소로 여러 개의 서비스에 접근이 가능하도록 함
     - 클라이언트가 HTTP 요청을 인그레스에 보낼 때, 요청한 호스트와 경로에 따라 요청을 전달할 서비스가 결정된다.
     - TSL (SSL) 인증서 적용이 가능하다.
 
-![image.png](attachment:71ab1272-ae03-4c12-8880-8115074f8208:image.png)
 
 - 인그레스 컨트롤러와 인그레스 리소스
     - Ingress는 기본적으로 Ingress Controller가 있어야 동작함
@@ -137,9 +131,8 @@
     - Ingress 리소스 (yaml) : 사용자가 설정하는 Ingress 객체
 
 - 인그레스 동작 방식
-    
-    ![image.png](attachment:d195b737-f979-4670-bac6-a1ca051f3493:image.png)
-    
+    <img width="517" alt="image" src="https://github.com/user-attachments/assets/a1d4455d-8cd3-42a5-8f44-bd94e753de63" />
+
     1. 클라이언트는 먼저 kubia.example.com의 DNS 조회를 수행. DNS 서버(혹은 로컬 host 파일)는 인그레스 컨트롤러의 IP를 반환
     2. 클라이언트는 HTTP 요청을 인그레스 컨트롤러로 전송하고 host 헤더에서 kubia.example.com을 지정
     3. 컨트롤러는 해당 헤더에서 클라이언트가 액세스하려는 서비스를 결정하고 서비스와 관련된 **앤드포인트 오브젝트로 파드 IP 조회 후** 클라이언트 요청을 **파드에 전달**한다.
