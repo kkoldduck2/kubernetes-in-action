@@ -445,6 +445,18 @@ spec:
 
 
 
+### OKD Route , k8s Ingress 차이
+
+* Ingress 는 http 와 https 프로토콜을 지원하고 Route 는 http, https, **TLS 등 다양한 프로토콜을 지원**합니다.
+* Ingress 는 **Nginx, Traefik, Istio 등과 같은 인그레스 컨트롤러를 사용하여 구현**되며, Route 는 **HAproxy로 구현** 를 사용하여 구현됩니다.
+* Ingress 는 기본적으로 Kubernetes API 오브젝트이며, Route 는 Openshift API 오브젝트입니다.
+
+
+
+---
+
+
+
 출처 
 
 https://jisooo.tistory.com/entry/kubernetes-%EC%99%B8%EB%B6%80-%EC%9A%94%EC%B2%AD%EC%9D%B4-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EB%82%B4-%ED%8C%8C%EB%93%9C%EA%B9%8C%EC%A7%80-%EC%A0%84%EB%8B%AC%EB%90%98%EB%8A%94-%EA%B3%BC%EC%A0%95
@@ -454,3 +466,5 @@ https://velog.io/@rockwellvinca/kubernetes-externalTrafficPolicy%EB%9E%80
 https://jeongchul.tistory.com/780
 
 https://qkqhxla1.tistory.com/1102
+
+https://sysdocu.tistory.com/1809
