@@ -73,9 +73,10 @@
     - 클러스터의 각 노드에서 실행되는 네트워크 프록시로, 쿠버네티스의 서비스 개념의 구현부이다
     - 모든 노드마다 데몬셋으로 설치됨
     - 서비스 오브젝트의 변화를 감지하고 -> 해당 노드의 네트워크 룰 설정을 변경함
+
 참고) 
-https://kubernetes.io/ko/docs/concepts/overview/components/
-https://kodekloud.com/blog/kube-proxy/
+- https://kubernetes.io/ko/docs/concepts/overview/components/
+- https://kodekloud.com/blog/kube-proxy/
 
 
 ### 클러스터 외부에 있는 서비스 연결하는 방법
