@@ -69,6 +69,16 @@
     - kube-proxy가 iptables 또는 IPVS 규칙을 사용하여 실제 Pod의 IP로 변경(DNAT)하여 전달
     - Pod가 요청을 처리하고, 응답을 다시 클라이언트에게 보냄
 
+- kube proxy란?
+    - 클러스터의 각 노드에서 실행되는 네트워크 프록시로, 쿠버네티스의 서비스 개념의 구현부이다
+    - 모든 노드마다 데몬셋으로 설치됨
+    - 서비스 오브젝트의 변화를 감지하고 -> 해당 노드의 네트워크 룰 설정을 변경함
+
+참고) 
+- https://kubernetes.io/ko/docs/concepts/overview/components/
+- https://kodekloud.com/blog/kube-proxy/
+
+
 ### 클러스터 외부에 있는 서비스 연결하는 방법
 
 1. 서비스 endpoint를 수동으로 구성하여 외부 IP 주소로 요청이 가도록 한다.
