@@ -1,11 +1,69 @@
 ## 7장 컨피그맵과 시크릿 : 애플리케이션 설정
 
 
-308 아큐먼트 파라미터 차이
-shell exec씨 차이
 
-컨피그맵도 메모리에 저장 시킬 수 있음.
-시크릿은 민감정보이기때문에 디스크에 저장하지않고 메모리에 저장된다
+### Parameter Argument 차이 
+
+Parameter는 함수 혹은 메서드 정의에서 나열되는 변수명
+
+Argument는 함수 혹은 메서드를 호출할 때, 전달 혹은 입력되는 실제 값입니다
+
+| 단어      | 번역           | 의미                                 |
+| :-------- | :------------- | :----------------------------------- |
+| Parameter | 매개변수       | 함수와 메서드 입력 변수(Variable) 명 |
+| Argument  | 전달인자, 인자 | 함수와 메서드의 입력 값(Value)       |
+
+#### parameter(매개변수)
+
+다음 cancat 함수 정의에서 str1과 str2는 parameter 입니다.
+
+```py
+def cancat(str1, str2):
+  return a +" "+ b
+```
+
+#### argument(전달인자)
+
+cancat 함수를 호출할 때, 입력값 “parameter”와 “argument”는 argument입니다.
+
+```python
+cancat("parameter", "argument")
+```
+
+
+
+
+
+---
+
+
+
+### Shell Form 과 Exec Form 차이
+
+Dockerfile에서 명령어를 실행할 때, **Shell Form**(쉘 형식)과 **Exec Form**(exec 형식)의 두 가지 방법이 있다.
+
+이 둘의 차이를 이해하는 것은 Dockerfile 작성의 핵심 중 하나
+
+| 특성                       | **Shell Form**                       | **Exec Form**                   |
+| -------------------------- | ------------------------------------ | ------------------------------- |
+| **구문**                   | `CMD echo "Hello, World!"`           | `CMD ["echo", "Hello, World!"]` |
+| **실행 방식**              | `/bin/sh -c`를 통해 실행             | 명령어를 직접 실행              |
+| **쉘 기능 사용 가능 여부** | 가능 (`&&`, `                        |                                 |
+| **보안성**                 | 쉘 인젝션 가능성 있음                | 보안성이 높음                   |
+| **성능**                   | 쉘 프로세스 생성으로 약간의 오버헤드 | 쉘이 없어 더 효율적             |
+| **유연성**                 | 높은 유연성                          | 명령어 및 인수에 국한됨         |
+
+
+
+
+
+---
+
+
+
+### 시크릿은 민감정보이기때문에 디스크에 저장하지않고 메모리에 저장된다.
+
+### ConfigMap 도 메모리에 저장 시킬 수 있음.
 
 
 
@@ -132,4 +190,10 @@ SSL 인증서와 같은 바이너리 파일의 경우 문자열로 저장이 불
 
    
 
-출처 : https://velog.io/@sjoh0704/K8S-Configmap-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EC%95%8C%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EA%B2%83%EB%93%A4
+출처 :
+
+https://velog.io/@sjoh0704/K8S-Configmap-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EC%95%8C%EB%A9%B4-%EC%A2%8B%EC%9D%80-%EA%B2%83%EB%93%A4
+
+https://sundaland.tistory.com/556
+
+http://taewan.kim/tip/argument_parameter/
