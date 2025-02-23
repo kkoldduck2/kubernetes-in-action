@@ -128,7 +128,6 @@ kubectl create configmap app-config --from-file=app.properties
 kubectl create configmap app-config --from-file=config-dir/
 ```
 
-![image.png](attachment:e240f899-79cc-440d-a083-f8aaf7501877:image.png)
 
 2) 컨피그맵을 주입하는 방법
 
