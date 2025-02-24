@@ -18,6 +18,7 @@
 → 설정 데이터를 저장하는 쿠버네티스를 **컨피그맵**이라고 함
 
  
+<br>
 
 ### 7.2 컨테이너에 명령줄 인수 전달
 
@@ -27,7 +28,8 @@
     | Docker | k8s | 설명 | 예시 |
     | --- | --- | --- | --- |
     | ENTRYPOINT | command | 컨테이너 안에서 실행되는 실행파일 |  |
-    | CMD | args | 실행파일에 전달되는 인자 | • shell 형식 : ENTRYPOINT node app.js</br> → 컨테이너 내부에서 node 프로세스 직접 실행</br> • exec 형식 : ENTRYPOINT [”node”, “app.js”] </br>→ node 프로세스가 아닌 shell 프로세스가 실행됨 |
+    | CMD | args | 실행파일에 전달되는 인자 | • shell 형식 : ENTRYPOINT node app.js<br> → 컨테이너 내부에서 node 프로세스 직접 실행<br> • exec 형식 : ENTRYPOINT [”node”, “app.js”] <br>→ node 프로세스가 아닌 shell 프로세스가 실행됨 |
+<br>
 
 ### 7.3 컨테이너의 환경변수 설정
 
@@ -35,6 +37,7 @@
 → 환경변수는 파드레벨이 아닌 컨테이너 정의 안에서 설정함.
     
     ![7.3](./jy.assets/7.3.png)
+<br>
 
 ### 7.4 컨피그맵
 
@@ -75,7 +78,7 @@
     
     | fortune-config.yaml | fortune-pod-env-configmap.yaml |
     | --- | --- |
-    | apiVersion: v1</br>    data: </br>        **sleep-interval: “25”**</br>    kind: ConfigMap</br>    metadata:</br>        name: fortune-config</br>        … | apiVersion: v1</br>    kind: Pod</br>    metadata:</br>        name: forntune-env-from-configmap</br>    spec:</br>        contaiers:</br>        - image: luksa/fortune:env</br>          env:</br>          - name:  INTERVAL</br>             **valueFrom:</br>                configMapKeyRef :</br>                    name: fortune-config</br>                    key: sleep-interval**</br>    … |
+    | apiVersion: v1<br>    data: <br>        **sleep-interval: “25”**<br>    kind: ConfigMap<br>    metadata:<br>        name: fortune-config<br>        … | apiVersion: v1<br>    kind: Pod<br>    metadata:<br>        name: forntune-env-from-configmap<br>    spec:<br>        contaiers:<br>        - image: luksa/fortune:env<br>          env:<br>          - name:  INTERVAL<br>             **valueFrom:<br>                configMapKeyRef :<br>                    name: fortune-config<br>                    key: sleep-interval**<br>    … |
     
 
 ```
@@ -83,6 +86,7 @@
 configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아도 컨테이너는 시작함.
 ```      
 
+<br>
 
 - 볼륨 안에 있는 컨피그맵 항목 사용
     
@@ -108,7 +112,7 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
     name: fortune-config                  # 이 볼륨은 fortune-config 컨피그맵을 참조
     ...
     ```
-    
+<br>    
 
 - 개별 configmap 항목을 파일로 마운트
     
@@ -123,7 +127,7 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
         mountPath: /etc/someconfig.conf      # 디렉토리가 아닌 파일을 마운트
         subPath: myconfig.conf               # 전체 볼륨을 마운트하는 대신 myconfig.conf 항목만 마운트
     ```
-    
+<br>
 
 - 컨피그맵 볼륨 안에 있는 파일 권한 설정
     
@@ -152,7 +156,8 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
     # 설정 다시 로드
     $ kubectl exec fortune-configmap-volume -c web-server -- nginx -s reload
     ```
-    
+<br>
+<br>
 
 ### 시크릿으로 민감한 데이터를 컨테이너에 전달
 
@@ -166,7 +171,7 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
   노드 자체적으로 시크릿을 항상 메모리에만 저장되게하고 물리 저장소에 기록되지 않게 해야함
   → 물리 저장소는 시크릿을 삭제한 후에도 디스크를 완전 삭제하는 작업이 필요하므로…
   ```    
-
+<br>
 
 ### Configmap과 Secret 비교
 
@@ -189,6 +194,7 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
     
     ![7.4.4](./jy.assets/7.4.4.png)
     
+<br>
 
 **바이너리 데이터 시크릿 사용**
 
@@ -197,9 +203,9 @@ configMapKeyRef.optional: true 로 지정하면 configmap이 존재하지 않아
 ```
 민감하지 않은 데이터도 시크릿을 사용할 수 있지만, 시크릿의 최대 크기는 1MB로 제한됨.
 ```     
+<br>
 
 **stringData 필드**
-
 읽기 전용으로 값을 설정할때만 사용.
 
 ```yaml
@@ -211,6 +217,7 @@ data:
 https.cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCekNDQ...
 https.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcE...
 ```
+<br>
 
 **환경변수로 시크릿 항목 노출**
 
