@@ -250,7 +250,7 @@ setWeight및 필드 를 사용하여 pause사용자는 새 버전으로 진행�
 
 
 
-![img](chapter8-cjs.assets/image.png)
+![img](chapter9-cjs.assets/image.png)
 
 위에 빨간색 부분이 새롭게 `Canary` 배포로 생성된 새로운 서버이다. maxSurge가 25%로 설정되어 있고 `replicas` 가 `8` 로 되어있기 때문에 `8 * 25 / 100` 을 계산하면 `2` 가 나온다. 따라서 2개의 새로운 서버만 띄워져 있는 모습을 볼 수 있다.
 
