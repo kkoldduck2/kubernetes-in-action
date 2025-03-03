@@ -12,8 +12,9 @@
 ```
 
 
-#### 쿠버네티스 구성 요소의 분산 특정
-k8s시스템 구성 요소는 오직 API 서버하고만 통심.
+#### 쿠버네티스 구성 요소의 분산 특징
+k8s시스템 구성 요소는 오직 API 서버하고만 통신
+
 ![alt text](./jy.assets/11.1.png)  
 
 |구분|구성요소|비고|
@@ -82,6 +83,7 @@ k8s시스템 구성 요소는 오직 API 서버하고만 통심.
 * 쿠버네티스에는 기본적으로 제공되는 다양한 Controller 존재   (ex. Deployment, ReplicaSet, StatefulSet 등)    
    
 레플리케이션 매니저 예시
+
   ![alt text](./jy.assets/11.6.png)
 
 #### Kubelet
@@ -97,9 +99,11 @@ k8s시스템 구성 요소는 오직 API 서버하고만 통심.
 * 현재는 성능이 더 우수한 iptables 프록시 모드로 수행됨    
   
 userspace 프록시 모드
+
 ![alt text](./jy.assets/11.9.png)  
 
 iptables 프록시 모드
+
 ![alt text](./jy.assets/11.10.png)
 
 * 두 모드의 가장 큰 차이점은 패킷이 kube-proxy를 통과해 사용자 공간에서 처리되는지, 아니면 커널에서 처리되는지 여부로 이는 성능에 큰 영향을 줌.
@@ -143,6 +147,10 @@ kubernetes-metrics-scraper    1/1     1            1           63d
 <br>
 
 [참고 Site] : https://velog.io/@chan9708/K8S-network-%EB%B0%8F-CNI-%EC%9D%B4%EB%A1%A0-%EC%A0%95%EB%A6%AC
+https://blog.hyojun.me/8
+[Kubernetes_네트워크_이해하기_1_컨테이너_네트워크부터_CNI까지 PDF](jy.assets/Kubernetes_네트워크_이해하기_1_컨테이너_네트워크부터_CNI까지_전효준_export.pdf)
+[Kubernetes_네트워크_이해하기_2_서비스_개념과_동작원리 PDF](jy.assets/Kubernetes_네트워크_이해하기_2_서비스_개념과_동작원리_전효준_export_.pdf)
+
 #### CNI
 * 컨테이너를 네트워크에 쉽게 연결하기 위해 시작
 * Calico, Flannel, Romana, Weave Net, 그 외 기타
@@ -171,7 +179,9 @@ kubernetes-metrics-scraper    1/1     1            1           63d
 ![alt text](./jy.assets/k8s2.png)
 
 ##### 따라서 k8s Pod 네트워크는 CNI를 사용
+
 ![alt text](./jy.assets/cni1.png)
+
 * Pod들은 각자 고유의 IP를 가진다.
 * 클러스터 내의 모든 Pod들은 NAT 없이 서로 통신이 가능하다.
 * 노드의 Agent들은 해당 노드의 모든 Pod와 통신이 가능하다.
