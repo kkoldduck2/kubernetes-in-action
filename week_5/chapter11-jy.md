@@ -147,8 +147,11 @@ kubernetes-metrics-scraper    1/1     1            1           63d
 <br>
 
 [참고 Site] : https://velog.io/@chan9708/K8S-network-%EB%B0%8F-CNI-%EC%9D%B4%EB%A1%A0-%EC%A0%95%EB%A6%AC
+
 https://blog.hyojun.me/8
+
 [Kubernetes_네트워크_이해하기_1_컨테이너_네트워크부터_CNI까지 PDF](jy.assets/Kubernetes_네트워크_이해하기_1_컨테이너_네트워크부터_CNI까지_전효준_export.pdf)
+
 [Kubernetes_네트워크_이해하기_2_서비스_개념과_동작원리 PDF](jy.assets/Kubernetes_네트워크_이해하기_2_서비스_개념과_동작원리_전효준_export_.pdf)
 
 #### CNI
