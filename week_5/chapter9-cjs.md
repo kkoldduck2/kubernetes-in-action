@@ -190,6 +190,21 @@ spec:
     canary:
       maxSurge: "25%"    # canary 배포로 생성할 pod의 비율
       maxUnavailable: 0  # 업데이트 될 때 사용할 수 없는 pod의 최대 수
+
+      # 안정 버전을 가리키는 서비스 이름 (trafficRouting사용시 필수)
+      #stableService: icis-sa-cmmn-service-rest-apigw
+
+      # 카나리 버전을 가리키는 서비스 이름 (trafficRouting사용시 필수)
+      #canaryService: icis-sa-cmmn-service-rest-apigw-preview
+      
+      #헤더 기반 라우팅시 반드시 세팅(Istio,ALB,Apisix 만 세팅 가능 OKD 는 불가)
+      #trafficRouting:
+      #  nginx:
+      #    stableIngress: icis-sa-cmmn-service-rest-apigw-ingress  # 실제 Ingress 이름
+      #    annotationPrefix: nginx.ingress.kubernetes.io  # 기본값, 변경 가능
+      #    additionalIngressAnnotations:
+      #      canary-by-header: X-Canary  # 선택적 추가 설정
+
       steps:
       - setWeight: 20
       - pause: {}
@@ -199,6 +214,23 @@ spec:
       - pause: {duration: 10}
       - setWeight: 80
       - pause: {duration: 10}
+
+      # header.responseType이 'S'(오류)인지 확인하여 롤아웃 진행 여부 결정
+      # - 총 5회 체크를 수행하며 1분 간격으로 진행됨
+      # - 1회라도 'S' 값이 감지되면 롤백 수행(failureLimit: 1)
+      # - 5회 모두 'S'가 아니면 성공으로 간주하고 다음 단계로 진행
+      # - 분석 중 일시적인 오류는 무시됨(inconclusive: ignore)
+      #- analysis:
+      #    templates:
+      #    - templateName: elasticsearch-response-check
+          
+      # N단계: 헤더기반으로 라우팅 -> Istio,ALB,Apisix 만 세팅 가능 OKD 는 불가
+      #- setHeaderRoute:
+      #    name: header-route
+      #    match:
+      #      - headerName: User-Agent
+      #        headerValue:
+      #          regex: ".*Chrome.*"
 ---
 kind: Service
 apiVersion: v1
@@ -213,6 +245,100 @@ spec:
     targetPort: 5000
     nodePort: 30081
   type: NodePort
+---
+#분석 템플릿
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: elasticsearch-response-check
+spec:
+  metrics:
+  - name: elasticsearch-response-check
+    interval: 10s      # 30초마다 체크
+    count: 5          # 총 5회 체크
+    # responseType이 'I'가 아니면 성공 (조건 성공시 배포 진행)
+    successCondition: "response.hits.hits[0].fields['header.responseType'][0] == 'I'"
+    # responseType이 'I'이면 실패 (조건이 참이면 배포 실패)
+    failureCondition: "response.hits.hits[0].fields['header.responseType'][0] == 'S' ||result.hits.hits[0].fields['header.responseType'][0] == 'E'"
+    failureLimit: 1   # 1번 이상 실패시 실패로 간주 
+    provider:
+      #Prometheus: 가장 일반적으로 사용되는 방식
+      #Datadog: Datadog 모니터링 서비스 사용
+      #NewRelic: NewRelic 모니터링 서비스 사용
+      #Wavefront: VMware Wavefront 모니터링 사용
+      #Kayenta: Netflix의 Kayenta 분석 도구 사용
+      #Web: HTTP 요청을 통한 커스텀 메트릭 사용
+      #Job: Kubernetes Job을 실행하여 메트릭 수집
+      web:
+        url: https://elasticsearch.dev.icis.kt.co.kr:443/logs-kubernetes.container_logs-*/_async_search
+        # 쿼리 파라미터
+        jsonPath: "{$}"
+        method: POST
+        insecure: true   # 자체 서명 인증서를 사용하는 경우 필요
+        # 인증 헤더
+        headers:
+        - key: Content-Type
+          value: application/json
+        - key: Authorization
+          value: Basic ZWxhc3RpYzpuZXcxMjM0IQ==
+        timeoutSeconds: 20
+        # 요청 본문
+        body: |
+          {
+            "sort": [
+              {
+                "@timestamp": {
+                  "order": "desc",
+                  "format": "strict_date_optional_time",
+                  "unmapped_type": "boolean"
+                }
+              },
+              {
+                "_doc": {
+                  "order": "desc",
+                  "unmapped_type": "boolean"
+                }
+              }
+            ],
+            "track_total_hits": false,
+            "fields": [
+              {
+                "field": "header.responseType",
+                "include_unmapped": true
+              },
+              {
+                "field": "@timestamp",
+                "format": "strict_date_optional_time"
+              }
+            ],
+            "size": 1,
+            "version": true,
+            "_source": false,
+            "query": {
+              "bool": {
+                "must": [{ "range": { "@timestamp": { "gte": "now-60m" } } }],
+                "filter": [
+                  {
+                    "match_phrase": {
+                      "kubernetes.container.name": "icis-sa-rest-apigw"
+                    }
+                  },
+                  {
+                    "match_phrase": {
+                      "category": "MON"
+                    }
+                  }, 
+                  {
+                    "match_phrase": {
+                       "header.trFlag":"R"
+                    }
+                  }
+                ],
+                "should": [],
+                "must_not": []
+              }
+            }
+          }
 ```
 
 `kind` 를 `Rollout` 으로 변경해주고 `strategy` 를 설정
