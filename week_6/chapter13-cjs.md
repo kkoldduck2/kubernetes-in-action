@@ -1,18 +1,10 @@
 ## 13장 : 클러스터 노드와 네트워크보안
 
-#### hostNetwork
+### hostNetwork
 
-Pod는 가상 네트워크 어댑터 대신 노드의 실제 네트워크 어댑터를 사용해야 할 수도 있다 
-
-Pod Spec 에서 hostNetwork 속성을 true로 설정하면 된다
-
-
-
----
-
-
-
-#### hostPort가 무엇이고 어떤 경우에 사용하는가?  /NodePort 와의 차이
+* 컨테이너가 호스트 노드의 네트워크 네임스페이스를 직접 공유
+* 컨테이너의 포트가 호스트의 포트에 직접 바인딩
+* Pod가 호스트의 네트워크 인터페이스와 IP 주소를 사용
 
 
 
@@ -20,7 +12,10 @@ Pod Spec 에서 hostNetwork 속성을 true로 설정하면 된다
 
 
 
-#### hostPID / hostIPC
+### hostPort  / NodePort 차이
+
+* hostPort는 단일 Pod와 노드에 대한 직접적인 바인딩
+* NodePort는 클러스터 모든 워커노드에서 서비스에 접근할 수 있는 방법을 제공하는 Service 유형
 
 
 
@@ -28,7 +23,29 @@ Pod Spec 에서 hostNetwork 속성을 true로 설정하면 된다
 
 
 
-#### SecuriyContext
+### hostPID
+
+* 컨테이너가 호스트 노드의 PID(프로세스 ID) 네임스페이스를 공유
+* Pod 내의 컨테이너가 호스트의 모든 프로세스를 볼 수 있음
+
+
+
+---
+
+
+
+###  hostIPC
+
+* 컨테이너가 호스트 노드의 IPC(프로세스 간 통신) 네임스페이스를 공유
+* 호스트 프로세스와 직접 통신이 필요한 애플리케이션에서 사용
+
+
+
+---
+
+
+
+### SecuriyContext
 
 ```yaml
 spec:
@@ -63,7 +80,7 @@ $ ls -l
 
 
 
-#### PodSecurityPolicy 
+### PodSecurityPolicy 
 
 쿠버네티스 1.25부터 PodSecurityPolicy는 완전히 제거 Pod Security Admission(PSA)을 사용해야 합니다
 
@@ -210,7 +227,7 @@ metadata:
 
 
 
-#### Pod Security Admission 전역 설정 (권장)
+### Pod Security Admission 전역 설정 (권장)
 
 쿠버네티스 1.25부터 PSA 사용해야함.
 
@@ -258,7 +275,7 @@ plugins:
 
 ---
 
-#### PodSecurity / RBAC 차이
+### PodSecurity / RBAC 차이
 
 이 두 메커니즘은 상호 보완적이며, 완전한 보안을 위해 함께 사용해야 합니다
 
@@ -308,7 +325,7 @@ plugins:
 
 
 
-#### 파드 네트워크 격리
+### 파드 네트워크 격리
 
 
 
@@ -404,15 +421,15 @@ spec:
 
 
 
-#### Zero Trust 네트워크 모델 (ZTN)
+### Zero Trust 네트워크 모델 (ZTN)
 
-##### 📌 기본 개념
+#### 📌 기본 개념
 
 > *"신뢰하지 말고, 항상 검증하라(Never Trust, Always Verify)"*
 
 Zero Trust는 기본적으로 모든 트래픽, 사용자, 기기를 신뢰하지 않고 지속적인 검증을 요구하는 보안 철학입니다.
 
-##### 🔑 핵심 원칙
+#### 🔑 핵심 원칙
 
 ##### 1️⃣ 기본 불신 (Default Deny)
 
@@ -438,17 +455,9 @@ Zero Trust는 기본적으로 모든 트래픽, 사용자, 기기를 신뢰하�
 - 각 영역 간 엄격한 경계와 접근 제어 적용
 - 침해 발생 시 측면 이동(lateral movement) 제한
 
-##### 🆚 전통적 모델과 비교
 
-```
-전통적 모델 (성벽 및 해자)Zero Trust 모델
-🏰 내부 네트워크는 기본적으로 신뢰🔍 내/외부 구분 없이 모든 것을 불신
-🧱 경계 방어(방화벽)에 집중🔐 모든 지점에서 보안 검증
-🔓 VPN으로 내부 접근 시 대부분 신뢰🔒 VPN 연결 후에도 지속적 검증
-📍 네트워크 위치가 신뢰의 기준👤 신원, 장치 상태, 행동이 신뢰 기준
-```
 
-##### 💻 쿠버네티스에서의 구현
+#### 💻 쿠버네티스에서의 구현
 
 ##### 🔸 NetworkPolicy
 
@@ -474,7 +483,7 @@ Zero Trust는 기본적으로 모든 트래픽, 사용자, 기기를 신뢰하�
 - 리소스 생성/수정 시 자동 정책 검증
 - 보안 정책 일관되게 적용
 
-##### ✅ 이점
+#### ✅ 이점
 
 ##### 🛡️ 보안 강화
 
