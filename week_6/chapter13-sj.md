@@ -268,10 +268,4 @@ spec:
 <img width="832" alt="image" src="https://github.com/user-attachments/assets/d476c72e-484c-49bd-8df6-896dfc1f517d" />
 
 
-
-## 4. 요약
-
-- 다른 파드로부터 파드를 보호하는 법
-- 파드로부터 클러스터 노드를 보호하는 방법
-
 ---
