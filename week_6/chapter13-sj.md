@@ -35,8 +35,7 @@
     
 - 이 경우 파드의 네트워크 인터페이스가 아니라 노드의 네트워크 인터페이스를 사용하게 됨
 - 이는 파드가 **자체 IP 주소를 갖는게 아니라**, 포트를 바인드하는 프로세스가 실행될 경우 해당 프로세스는 **노드의 포트에 바인딩**된다는 것임
-
-![image.png](attachment:61ba17fe-e781-4081-adbc-a7a8adaf0c09:image.png)
+<img width="774" alt="image" src="https://github.com/user-attachments/assets/2f88fdf7-3c19-48b4-ac7b-89e1ea99af7d" />
 
 ### 2) 호스트 네트워크 네임스페이스를 사용하지 않고 호스트 포트에 바인딩
 
@@ -49,14 +48,12 @@
     - NodePort
         - 노드의 포트로 들어오는 요청은 다른 노드에 있을 수 있는 임의의 파드로 랜덤하게 전달됨.
         - 파드를 실행하지 않는 노드에서도 모든 노드의 포트를 바인딩
-
-![image.png](attachment:32ae68a6-49f4-4006-8302-aab32b813ebd:image.png)
+<img width="774" alt="image" src="https://github.com/user-attachments/assets/ac6cb0c2-fde5-4c86-b926-71f23ed50c14" />
 
 - 파드가 특정 호스트 포트를 사용하는 경우, 노드별로 파드 인스턴스 한개씩 밖에 스케줄링 될 수 없음 (두 프로세스가 동일한 호스트에 바인딩될 수 없으므로)
     - 스케줄러는 파드를 스케줄할 때 이를 고려함. 따라서 여러 파드를 동일 노드에 스케줄링하지 않음
     - 만약 노드 3개가 있고 파드 레플리카 4개를 배포하려고 시도하면, 3개만 스케줄링되고 하나는 pending 상태가 됨
-
-![image.png](attachment:1314e3e0-1c7f-41e6-b98d-d5b7521143e5:image.png)
+<img width="774" alt="image" src="https://github.com/user-attachments/assets/352af999-7639-4cfa-9f1d-0e2466c28166" />
 
 ### 3) 노드의 PID와 IPC 네임스페이스 사용
 
@@ -73,8 +70,7 @@
 - 보안 컨텍스트는 Pod 단위 또는 Container 단위로 설정할 수 있음
 - 보안 컨텍스트를 지정하지 않고 파드 실행할 경우
     - 사용자 ID(uid) 0, 그룹 ID(gid) 0인 루트 사용자로 실행됨
-
-![image.png](attachment:a39ed4a9-e1b6-41a8-883b-f31a9e16f84b:image.png)
+<img width="837" alt="image" src="https://github.com/user-attachments/assets/b14618dc-85a5-467a-a694-36bf5e7c2c6d" />
 
 ### 1) 주요 항목 설명 (컨테이너 기준)
 
