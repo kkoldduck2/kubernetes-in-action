@@ -233,6 +233,41 @@ spec:
         
 
 ## 3. 파드 네트워크 격리
+- NetworkPolicy 설정을 통해 파드 간의 네트워킹을 제한할 수 있다. (안될 수도 있음. 네트워킹 플러그인에 따라 다름.)
+- ingress와 egress 규칙으로 설정할 수 있음
+
+### 1) 네임스페이스에서 네트워크 격리 사용
+
+- 아래와 같이 특정 네임스페이스에서 default-deny NetworkPolicy를 생성하면 모든 클라이언트가 해당 네임스페이스의 모든 파드에 연결할 수 없다.
+
+
+
+### 2) 네임스페이스의 일부 클라이언트 파드만 서버 파드에 연결하도록 허용
+
+- 클라이언트가 네임스페이스의 파드에 연결할 수 있게 하려면 파드에 연결할 수 있는 대상을 명시적으로 지정해야 함
+- 예) 네임스페이스 foo에서 실행되는 PostgreSQL 데이터베이스 파드와 데이터베이스를 사용하는 웹 서버 파드가 있음. 다른 파드도 같은 네임스페이스에 있지만 데이터베이스에 연결하는 것을 원하지 않음.
+
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/3ef73578-9e81-4522-93ee-acfd45def954" />
+
+- app=webserver 레이블이 있는 파드가 app=database 레이블이 있는 파드의 포트 5432에만 연결될 수 있음
+
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/00bf6935-88f3-4e10-92fd-bb7022f31de8" />
+
+### 3) 쿠버네티스 네임스페이스 간 네트워크 격리
+
+- 여러 테넌트가 동일한 쿠버네티스 클러스터를 사용하는 경우 → 각 테넌트는 여러 네임스페이스를 사용할 수 있음, 각 네임스페이스는 해당 테넌트를 지정하는 레이블이 존재
+- 예) Manning 테넌트가 있고 그 안에 모든 네임스페이스는 tenant: manning 레이블이 지정되어 있음
+    - 그중 하나의 네임스페이스 안에서 같은 테넌트 안에 있는 모든 네임스페이스의 파드가 사용할 수 있는 Shopping Cart 마이크로서비스를 실행함.
+    - 다른 테넌트가 해당 마이크로서비스에 액세스하는 것을 원하지 않음
+
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/cf3259b8-8ffa-433b-93ca-b88066dcdfd8" />
+
+### 4) 파드의 아웃바운드 트래픽 제한
+
+- 이그레스 규칙으로 아웃바운드 트래픽을 제한할 수 있다.
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/d476c72e-484c-49bd-8df6-896dfc1f517d" />
+
+
 
 ## 4. 요약
 
