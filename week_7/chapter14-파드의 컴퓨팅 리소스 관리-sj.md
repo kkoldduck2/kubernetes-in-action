@@ -45,8 +45,8 @@ spec:
     - 스케줄러가 노드에 파드를 스케줄링할 때 이 정보를 사용한다.
     - 이때 실제 노드에 배포된 파드들이 실제로 얼마의 리소스를 사용하는가와 상관 없이 **리소스 요청량의 전체 합**만을 고려한다.
     
-    ![image.png](attachment:96a3718a-e770-41be-8fa4-9d04d3db8b62:image.png)
-    
+    <img width="664" alt="image" src="https://github.com/user-attachments/assets/cd33cde6-ec33-43ce-8bfd-8314299ca83d" />
+
 - CPU 요청이 CPU 시간 공유에 미치는 영향
     - CPU 제한 없이 요청만 있을 경우, CPU 시간을 파드 간에 분배하는 방식도 요청에 의해 결정된다.
     - 예를 들어 A 파드가 200밀리코어를 요청하고 B 파드가 1000밀리코어를 요청하면, 미사용된 CPU는 두 파드 사이에 1:5 비율로 분배된다. 두 파드가 가능한 한 많은 CPU를 소비하는 경우,  A파드는 1/6의 CPU 시간을 얻고 다른 파드는 나머지 5/6을 얻는다.
@@ -97,8 +97,8 @@ spec:
         - 실행 중인 각 프로세스가 갖는 OOM 점수를 비교하여 메모리 해제가 필요할때 가장 높은 점수의 프로세스를 종료함
         - 요청된 메모리의 사용률이 더 높은 파드를 먼저 종료한다.(아래 그림에서 B 파드가 C 파드보다 먼저 종료된다.)
     
-    ![image.png](attachment:ea889b9c-a702-4e1e-91b2-53de86fd3cb9:image.png)
-    
+    <img width="664" alt="image" src="https://github.com/user-attachments/assets/6c3fca45-01ea-4b8d-8e97-333cba8ea998" />
+
 
 ## 4. 네임스페이스별 파드에 대한 기본 요청과 제한 설정
 
@@ -196,8 +196,7 @@ spec:
     - kubelet 자체에 cAdvisor라는 에이전트가 포함되어 있음 → 노드에서 실행되는 개별 컨테이너와 노드 전체의 리소스 사용 데이터를 수집
     - 힙스터라는 추가 구성 요소를 실행하여 이러한 통계를 중앙에서 수집
     
-    ![image.png](attachment:0c8fd2c6-7607-4dbf-a8c7-218f549713ac:image.png)
-    
+    <img width="690" alt="image" src="https://github.com/user-attachments/assets/ea34204d-d8a9-4975-9bef-33155bc1510b" />
 
 - 기간별 리소스 사용량 통계 저장 및 분석
     - cAdvisor와 힙스터는 모두 짧은 기간 동안의 리소스 사용량 데이터만 보유한다.
@@ -205,7 +204,7 @@ spec:
         - InfluxDB : 오픈소스 시계열 데이터베이스
 - 그래프 분석
 
-![image.png](attachment:783e50b6-ea76-4932-89cb-5f0f57f7a17f:image.png)
+<img width="690" alt="image" src="https://github.com/user-attachments/assets/54220534-e5cc-4aa6-abca-1bf97aa09076" />
 
 ## 7. 요약
 
