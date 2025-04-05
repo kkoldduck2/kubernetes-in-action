@@ -58,6 +58,42 @@ kubectl get --raw "/apis/external.metrics.k8s.io/v1beta1" | jq .
 # 특정 네임스페이스의 커스텀 메트릭 확인
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/http_requests" | jq .
 
+--- adapter-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adapter-config
+  namespace: monitoring
+data:
+  config.yaml: |
+    rules:
+    - seriesQuery: 'http_requests_total{namespace!="",pod!=""}'
+      resources:
+        overrides:
+          namespace: {resource: "namespace"}
+          pod: {resource: "pod"}
+          service: {resource: "service"}
+      name:
+        matches: "^(.*)_total"
+        as: "${1}_per_second"
+      metricsQuery: 'sum(rate(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)'
+      
+kubectl apply -f adapter-config.yaml
+
+---prometheus-adapter-values.yaml
+rules:
+  existing: adapter-config
+  existingKey: config.yaml
+prometheus:
+  url: http://prometheus-server.monitoring.svc
+  port: 80
+logLevel: 4
+
+helm install --install prometheus-adapter prometheus-community/prometheus-adapter \
+  --namespace monitoring \
+  -f prometheus-adapter-values.yaml
+  
+
 # 어댑터 로그 확인 (Prometheus Adapter의 경우)
 kubectl logs -n monitoring deploy/prometheus-adapter
 
@@ -305,3 +341,64 @@ spec:
     matchLabels:
       app: example-app  # 이 레이블을 가진 파드에 적용
 ```
+
+
+
+
+
+
+
+---
+
+프로메테우스 어댑터 사용해서 HPA적용 샘플
+
+```sh
+kubectl create namespace monitoring
+
+# Helm 저장소 추가
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+# Prometheus 설치
+helm install prometheus prometheus-community/prometheus \
+  --namespace monitoring \
+  --set server.persistentVolume.enabled=true \
+  --set server.persistentVolume.size=10Gi
+
+# Prometheus 개선 설치
+
+helm install prometheus prometheus-community/prometheus \
+  --namespace monitoring \
+  --set nodeExporter.podSecurityContext.runAsUser=0 \
+  --set nodeExporter.podSecurityContext.runAsNonRoot=false
+
+helm install prometheus prometheus-community/prometheus \
+  --namespace monitoring \
+  --set nodeExporter.hostRootfs=false
+  
+루트경로 지워서 install 해결
+  
+# Prometheus Adapter 설치
+helm install prometheus-adapter prometheus-community/prometheus-adapter --namespace monitoring \
+  --values prometheus-adapter-values.yaml
+
+# Grafana 설치
+
+helm install grafana grafana/grafana \
+  --namespace monitoring \
+  --set persistence.enabled=true \
+  --set persistence.size=5Gi \
+  --set "datasources.datasources\.yaml.apiVersion=1" \
+  --set "datasources.datasources\.yaml.datasources[0].name=Prometheus" \
+  --set "datasources.datasources\.yaml.datasources[0].type=prometheus" \
+  --set "datasources.datasources\.yaml.datasources[0].url=http://prometheus-server.monitoring.svc.cluster.local" \
+  --set "datasources.datasources\.yaml.datasources[0].access=proxy" \
+  --set "datasources.datasources\.yaml.datasources[0].isDefault=true"
+#  --set service.type=LoadBalancer \
+
+# Grafana 관리자 비밀번호 확인
+echo "Grafana 관리자 비밀번호:"
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
