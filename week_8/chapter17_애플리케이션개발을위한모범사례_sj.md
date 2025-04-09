@@ -1,6 +1,6 @@
 ### 1. 모든 것을 하나로 모아보기
 
-![image.png](attachment:1cfc7727-ad24-483e-942c-b51dbd519cfe:image.png)
+<img width="863" alt="image" src="https://github.com/user-attachments/assets/c7d8d890-c3ee-40c5-993f-02f93a0591da" />
 
 - **애플리케이션 매니페스트의 구성**
     - **애플리케이션 매니페스트**에는 보통 하나 이상의 **Deployment** 또는 **StatefulSet** 오브젝트가 포함된다.
@@ -52,22 +52,21 @@
 - 디스크에 기록된 데이터가 사라지는 경우 예상하기
     - 파드가 종료되고 새로운 파드로 실행 되는 경우 & 파드는 그대로더라도 컨테이너가 재시작하는 경우, 애플리케이션이 디스크에 쓴 파일은 사라질 수 있다.
     - 컨테이너가 재시작되면 새 컨테이너는 완전히 새로운 쓰기 가능한 레이어로 시작하기 때문
-    
-    ![image.png](attachment:e6509ac8-6e0c-4f4c-8e0e-1826bab0ce2d:image.png)
-    
+    <img width="863" alt="image" src="https://github.com/user-attachments/assets/ec5909a1-db55-4e0b-a3b0-ff290ea31f1d" />
+
 - 컨테이너를 다시 사용하더라도 데이터를 보존하기 위해 볼륨 사용하기
     - 컨테이너가 다시 시작되더라도 데이터가 손실되지 않도록 하기 위해서는 최소한 파드 범위의 볼륨을 사용해야 한다.
     - 하지만 이 방식이 항상 옳은 것은 아님! 데이터가 손상돼 새로 생성된 프로세스가 다시 크래시 되면 → 연속 크래시 루프 발생 (CrashLoopBackOff). 이 경우에는 볼륨을 사용하지 않으면 크래시하지 않을 가능성이 높다.
     
-    ![image.png](attachment:2548883a-4df4-430e-aadb-dc8e346c5da8:image.png)
-    
+    <img width="847" alt="image" src="https://github.com/user-attachments/assets/9d08e8da-0ef2-4c40-b936-8c72cefbb041" />
+
 
 **2) 종료된 파드 또는 부분적으로 종료된 파드를 다시 스케줄링하기**
 
 - 파드의 컨테이너가 계속 크래시되면 Kubelet이 계속 파드를 재시작 (재시작 간격 지수로 늘어남)
 - 레플리카셋에 포함된 여러 파드 중 하나에서 계속 컨테이너 크래시가 발생하더라도 쿠버네티스는 해당 파드를 삭제하고 교체하지 않음 → 레플리카셋 컨트롤러는 파드가 죽은 상태가 됐는지 상관하지 않음. 신경쓰는 건 오직 파드 수가 의도하는 레플리카 수와 일치하는가 여부임
 
-![image.png](attachment:14ebe686-38ac-491d-aedd-8b456522dfbf:image.png)
+<img width="847" alt="image" src="https://github.com/user-attachments/assets/f7c8a619-16cb-45d6-a038-d84f10546c84" />
 
 **3) 원하는 순서로 파드 재시작**
 
@@ -148,7 +147,7 @@
     3. 컨테이너가 완전히 종료될 때까지 or 종료 유예 기간이 끝날 때까지 기다린다
     4. 아직 정상적으로 종료되지 않은 경우 SIGKILL로 프로세스를 강제 종료한다. 
 
-![image.png](attachment:3a70df6e-9552-4e98-acbf-eb83ce11a394:image.png)
+<img width="847" alt="image" src="https://github.com/user-attachments/assets/19e798be-a3ff-4c21-819f-d9ba88f0ec3c" />
 
 - 애플리케이션에서 적절한 셧다운 핸들러 구현
     - 만약 애플리케이션이 분산 데이터 저장소라면. 종료 단계에서 파드는 모든 데이터를 나머지 파드로 마이그레이션해 데이터가 손실되지 않도록 해야한다.
@@ -182,11 +181,9 @@
     - 파드에서 애플리케이션 종료하는데 걸리는 시간이 Kube-proxy가 iptables 수정하는데 걸리는 시간보다 약간 더 짧다.
     - 애플리케이션이 서버 소켓을 닫고 연결 수락을 즉시 중지하면 클라이언트가 “Connection Refused” 오류를 수신하게 됨
 
-![image.png](attachment:6b5d9c04-7dbe-4a28-8c8f-84fd77641632:image.png)
-
-![image.png](attachment:ef031d99-f735-4d42-82d8-a0d57b51a1d8:image.png)
+<img width="875" alt="image" src="https://github.com/user-attachments/assets/9576d872-2665-493c-81c4-ed02696963a7" />
 
 - 문제 해결
     - 모든 kube-proxy가 iptables 규칙을 업데이트할 때까지 충분한 시간을 기다리기 (약 5~10초 정도)
 
-![image.png](attachment:19c0cec8-3a3d-418e-a948-db25693467f8:image.png)
+<img width="875" alt="image" src="https://github.com/user-attachments/assets/f4c0013b-5d9c-47c9-8c25-bbbb2d1124a2" />
