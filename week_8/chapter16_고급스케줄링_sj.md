@@ -20,8 +20,8 @@
     
     - 예2) 시스템 파드의 toleration이 master node의 taint와 일치하기 때문에 마스터 노드에 스케줄링 된다.
     
-    ![image.png](attachment:5b0fffe8-9aab-4be3-80e3-68e28d182f93:image.png)
-    
+    <img width="783" alt="image" src="https://github.com/user-attachments/assets/0bb0f465-f4bd-4df7-acad-617b97962bd2" />
+
 - **세 가지 유형의 테인트**:
     - **NoSchedule**: 해당 노드에 파드를 배치하지 않는다. (강력한 제약)
     - **Prefer-NoSchedule**: 파드가 해당 노드에 배치되지 않기를 "선호"하지만, 꼭 그렇지는 않다. (다소 유연한 제약)
